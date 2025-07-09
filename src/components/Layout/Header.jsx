@@ -85,18 +85,18 @@ const Header = ({ onMenuClick }) => {
   }, []);
 
   return (
-    <header className="bg-white dark:bg-gray-800  shadow-sm border-b border-gray-200 dark:border-gray-700  top-0 z-40">
+    <header className="bg-white dark:bg-neutral-800/50 shadow-sm border-b border-gray-200 dark:border-neutral-700/80 backdrop-blur-lg top-0 z-40">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left side */}
         <div className="flex items-center">
           <button
             onClick={onMenuClick}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700/50 transition-colors"
             aria-label={t("toggle_menu")}
           >
-            <Bars3Icon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+            <Bars3Icon className="h-5 w-5 text-gray-600 dark:text-neutral-300" />
           </button>
-          <h2 className="ml-4 text-lg font-semibold text-gray-900 dark:text-white md:ml-0">
+          <h2 className="ml-4 text-lg font-semibold text-gray-900 dark:text-neutral-100 md:ml-0">
             {t("dashboard")}
           </h2>
         </div>
@@ -105,10 +105,10 @@ const Header = ({ onMenuClick }) => {
         <div className="flex items-center space-x-4">
           {/* Notifications */}
           <button
-            className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700/50 transition-colors"
             aria-label={t("notifications")}
           >
-            <BellIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+            <BellIcon className="h-5 w-5 text-gray-600 dark:text-neutral-300" />
             <span className="absolute -top-1 -right-1 h-4 w-4 bg-error-500 rounded-full text-xs text-white flex items-center justify-center">
               3
             </span>
@@ -122,9 +122,9 @@ const Header = ({ onMenuClick }) => {
               className={`
                 flex items-center ${isRTL ? "flex-row" : ""}
                 space-x-1 sm:space-x-2 p-1 rounded-lg 
-                hover:bg-gray-100 dark:hover:bg-gray-700 
+                hover:bg-gray-100 dark:hover:bg-neutral-700/50 
                 transition-colors group
-                ${isDropdownOpen ? "bg-gray-100 dark:bg-gray-700" : ""}
+                ${isDropdownOpen ? "bg-gray-100 dark:bg-neutral-700/50" : ""}
               `}
               aria-haspopup="menu"
               aria-expanded={isDropdownOpen}
@@ -135,14 +135,14 @@ const Header = ({ onMenuClick }) => {
                 size="small"
                 className={`
                   ring-2 ring-primary-500/20 ring-offset-2 
-                  ring-offset-white dark:ring-offset-gray-800
+                  ring-offset-white dark:ring-offset-neutral-800
                   ${isRTL ? "ml-1 sm:ml-2" : "mr-1 sm:mr-2"}
                 `}
               />
               <div className="hidden sm:block">
                 <p
                   className={`
-                  text-sm font-medium text-gray-900 dark:text-white
+                  text-sm font-medium text-gray-900 dark:text-neutral-100
                   ${isRTL ? "text-right mr-2" : "text-left ml-2"}
                 `}
                 >
@@ -151,7 +151,7 @@ const Header = ({ onMenuClick }) => {
               </div>
               <ChevronDownIcon
                 className={`
-                  h-4 w-4 text-gray-500 dark:text-gray-400 
+                  h-4 w-4 text-gray-500 dark:text-neutral-400 
                   transition-transform 
                   ${isRTL ? "mr-1" : "ml-1"}
                   ${isDropdownOpen ? "rotate-180" : ""}
@@ -164,15 +164,15 @@ const Header = ({ onMenuClick }) => {
               <div
                 className={`
                   absolute ${isRTL ? "left-0" : "right-0"} 
-                  mt-2 w-56 bg-white dark:bg-gray-700 
+                  mt-2 w-56 bg-white dark:bg-neutral-800/90
                   rounded-xl shadow-lg ring-1 ring-black/5 dark:ring-white/10
-                  animate-dropdown-enter
+                  animate-dropdown-enter backdrop-blur-lg
                 `}
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="user-menu"
               >
-                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="px-4 py-3 border-b border-gray-200 dark:border-neutral-700/80">
                   <div className="flex items-center space-x-3">
                     <Avatar
                       name={user?.name}
@@ -183,7 +183,7 @@ const Header = ({ onMenuClick }) => {
                     <div>
                       <p
                         className={`
-                        text-sm font-medium text-gray-900 dark:text-white
+                        text-sm font-medium text-gray-900 dark:text-neutral-100
                         ${isRTL ? "text-right" : "text-left"}
                       `}
                       >
@@ -191,7 +191,7 @@ const Header = ({ onMenuClick }) => {
                       </p>
                       <p
                         className={`
-                        text-xs text-gray-500 dark:text-gray-400 truncate
+                        text-xs text-gray-500 dark:text-neutral-400 truncate
                         ${isRTL ? "text-right" : "text-left"}
                       `}
                       >
@@ -205,15 +205,15 @@ const Header = ({ onMenuClick }) => {
                   <button
                     onClick={toggleTheme}
                     className="w-full flex items-center px-4 py-2 text-sm 
-                    text-gray-700 dark:text-gray-200 
-                    hover:bg-gray-100 dark:hover:bg-gray-600 
+                    text-gray-700 dark:text-neutral-200 
+                    hover:bg-gray-100 dark:hover:bg-neutral-700/50 
                     transition-colors group"
                     role="menuitem"
                   >
                     {theme === "light" ? (
-                      <MoonIcon className="h-5 w-5 mr-3 text-gray-500 group-hover:text-primary-500" />
+                      <MoonIcon className="h-5 w-5 mr-3 text-gray-500 dark:text-neutral-400 group-hover:text-primary-500" />
                     ) : (
-                      <SunIcon className="h-5 w-5 mr-3 text-gray-500 group-hover:text-primary-500" />
+                      <SunIcon className="h-5 w-5 mr-3 text-gray-500 dark:text-neutral-400 group-hover:text-primary-500" />
                     )}
                     {theme === "light"
                       ? t("switch_to_dark")
@@ -224,12 +224,12 @@ const Header = ({ onMenuClick }) => {
                   <button
                     onClick={toggleLanguage}
                     className="w-full flex items-center px-4 py-2 text-sm 
-                    text-gray-700 dark:text-gray-200 
-                    hover:bg-gray-100 dark:hover:bg-gray-600 
+                    text-gray-700 dark:text-neutral-200 
+                    hover:bg-gray-100 dark:hover:bg-neutral-700/50 
                     transition-colors group"
                     role="menuitem"
                   >
-                    <LanguageIcon className="h-5 w-5 mr-3 text-gray-500 group-hover:text-primary-500" />
+                    <LanguageIcon className="h-5 w-5 mr-3 text-gray-500 dark:text-neutral-400 group-hover:text-primary-500" />
                     {t("toggle_language")}
                   </button>
 

@@ -7,7 +7,14 @@ import {
 } from "../../store/slices/projectSlice";
 import { useTranslation } from "../../utils/translations";
 import { generateId, calculateProgress } from "../../utils/helpers";
-import { PlusIcon, FolderIcon } from "@heroicons/react/24/outline";
+import {
+  PlusIcon,
+  FolderIcon,
+  SparklesIcon,
+  RocketLaunchIcon,
+  StarIcon,
+  FireIcon,
+} from "@heroicons/react/24/outline";
 import Card from "../../components/Common/Card";
 import Button from "../../components/Common/Button";
 import Modal from "../../components/Common/Modal";
@@ -23,7 +30,8 @@ const AdminProjects = () => {
   const { tasks } = useSelector((state) => state.tasks);
   const { language } = useSelector((state) => state.settings);
   const { t } = useTranslation(language);
-
+  const isRTL = language === "ar";
+  const directionClass = isRTL ? "rtl" : "ltr";
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [modalMode, setModalMode] = useState("create");
@@ -69,7 +77,14 @@ const AdminProjects = () => {
   const handleDeleteProject = (projectId) => {
     if (confirm(t("confirmDelete"))) {
       dispatch(deleteProject(projectId));
-      toast.success(t("projectDeleted"));
+      toast.success(t("projectDeleted"), {
+        icon: "🗑️",
+        style: {
+          borderRadius: "12px",
+          background: "linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)",
+          color: "#fff",
+        },
+      });
     }
   };
 
@@ -137,7 +152,14 @@ const AdminProjects = () => {
         projectData.progress = 0;
 
         dispatch(addProject(projectData));
-        toast.success(t("projectCreated"));
+        toast.success(t("projectCreated"), {
+          icon: "🚀",
+          style: {
+            borderRadius: "12px",
+            background: "linear-gradient(135deg, #f0760a 0%, #10b981 100%)",
+            color: "#fff",
+          },
+        });
       } else {
         projectData.id = selectedProject.id;
         projectData.createdAt = selectedProject.createdAt;
@@ -145,12 +167,26 @@ const AdminProjects = () => {
         projectData.progress = selectedProject.progress;
 
         dispatch(updateProject(projectData));
-        toast.success(t("projectUpdated"));
+        toast.success(t("projectUpdated"), {
+          icon: "✨",
+          style: {
+            borderRadius: "12px",
+            background: "linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%)",
+            color: "#fff",
+          },
+        });
       }
 
       setIsModalOpen(false);
     } catch {
-      toast.error(t("serverError"));
+      toast.error(t("serverError"), {
+        icon: "💥",
+        style: {
+          borderRadius: "12px",
+          background: "linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)",
+          color: "#fff",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -165,61 +201,204 @@ const AdminProjects = () => {
     return calculateProgress(projectTasks);
   };
 
+  const getStatusConfig = (status) => {
+    const configs = {
+      completed: {
+        variant: "success",
+        icon: StarIcon,
+        gradient: "from-success-400 to-success-600",
+        glow: "shadow-success-glow",
+      },
+      progress: {
+        variant: "primary",
+        icon: RocketLaunchIcon,
+        gradient: "from-primary-400 to-primary-600",
+        glow: "shadow-glow",
+      },
+      "on-hold": {
+        variant: "warning",
+        icon: FireIcon,
+        gradient: "from-warning-400 to-warning-600",
+        glow: "shadow-lg",
+      },
+      planning: {
+        variant: "default",
+        icon: SparklesIcon,
+        gradient: "from-accent-400 to-accent-600",
+        glow: "shadow-accent-glow",
+      },
+    };
+    return configs[status] || configs.planning;
+  };
+
+  const statsCards = [
+    {
+      title: t("totalProjects"),
+      value: projects.length,
+      icon: FolderIcon,
+      bg: "bg-gradient-to-br from-primary-400 to-primary-600",
+      color: "text-white",
+      animation: "animate-bounce-in",
+      shadow: "shadow-primary-glow",
+    },
+    {
+      title: t("activeProjects"),
+      value: projects.filter((p) => p.status === "progress").length,
+      icon: RocketLaunchIcon,
+      bg: "bg-gradient-to-br from-success-400 to-success-600",
+      color: "text-white",
+      animation: "animate-bounce-in",
+      shadow: "shadow-success-glow",
+    },
+    {
+      title: t("completedProjects"),
+      value: projects.filter((p) => p.status === "completed").length,
+      icon: StarIcon,
+      bg: "bg-gradient-to-br from-accent-400 to-accent-600",
+      color: "text-white",
+      animation: "animate-bounce-in",
+      shadow: "shadow-accent-glow",
+    },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t("projects")}
-        </h1>
+    <div
+      className={`space-y-8 p-6 min-h-screen ${directionClass} animate-fade-in`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {/* Animated Header */}
+      <div
+        className={`flex items-center ${
+          isRTL ? "flex-row" : ""
+        } justify-between animate-fade-in`}
+      >
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <FolderIcon className="h-10 w-10 text-primary-500 animate-bounce-in" />
+            <SparklesIcon className="h-4 w-4 text-accent-400 absolute -top-1 -right-1 animate-pulse-slow" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-happy bg-clip-text text-transparent">
+              {t("projects")}
+            </h1>
+            <p className="text-lg text-neutral-600 dark:text-neutral-400">
+              {t("manageYourProjects")}
+            </p>
+          </div>
+        </div>
         <Button
           onClick={handleCreateProject}
           icon={<PlusIcon className="h-5 w-5" />}
+          className="animate-bounce-in shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary-500 to-primary-600 border-0"
+          isRTL={isRTL}
         >
           {t("add")} {t("project")}
         </Button>
       </div>
 
-      {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => {
-          // const projectTasks = getProjectTasks(project.id);
+        {statsCards.map((stat, index) => (
+          <Card
+            key={stat.title}
+            className={`
+              ${stat.animation} ${stat.shadow} 
+              hover:scale-105 hover:shadow-xl transition-all duration-300 
+              border-2 border-white/50 overflow-hidden relative group cursor-pointer
+            `}
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <div className={`absolute inset-0 ${stat.bg}`} />
+            <div className="relative z-10 p-6">
+              <div className={`flex items-center ${isRTL ? "flex-row" : ""}`}>
+                <div className="p-3 rounded-xl bg-white/30 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 border border-white/50">
+                  <stat.icon
+                    className={`h-8 w-8 ${stat.color} group-hover:animate-wiggle drop-shadow-sm`}
+                  />
+                </div>
+                <div className={`${isRTL ? "mr-4" : "ml-4"} text-white`}>
+                  <p className="text-3xl font-bold mb-1 group-hover:animate-pulse drop-shadow-sm">
+                    {stat.value}
+                  </p>
+                  <p className="text-sm opacity-95 font-medium drop-shadow-sm">
+                    {stat.title}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white/20 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-500" />
+          </Card>
+        ))}
+      </div>
+
+      {/* Enhanced Projects Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project, index) => {
           const progress = getProjectProgress(project.id);
           const teamMembersData = members.filter((member) =>
             project.teamMembers?.includes(member.id)
           );
+          const statusConfig = getStatusConfig(project.status);
 
           return (
-            <Card key={project.id} className="project-card">
-              <div className="space-y-4">
+            <Card
+              key={project.id}
+              className={`
+                animate-bounce-in hover:scale-105 transition-all duration-300 
+                ${statusConfig.glow} border-0 bg-gradient-to-br from-white to-neutral-50 
+                dark:from-neutral-800 dark:to-neutral-900 overflow-hidden group
+              `}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="space-y-6 relative">
+                {/* Decorative Element */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900/20 dark:to-accent-900/20 rounded-full -translate-y-12 translate-x-12 group-hover:scale-150 transition-transform duration-500" />
+
                 {/* Header */}
-                <div className="flex items-start justify-between">
-                  <div className={`flex items-center ${language === 'ar' ? 'space-x-reverse' : ''}`}>
-                    <FolderIcon className={`h-8 w-8 text-primary-600 ${language === 'ar' ? 'ml-3' : 'mr-3'}`} />
+                <div
+                  className={`flex items-start ${
+                    isRTL ? "flex-row-reverse" : ""
+                  } justify-between relative z-10`}
+                >
+                  <div
+                    className={`flex items-center ${
+                      isRTL ? "space-x-reverse space-x-3" : "space-x-3"
+                    }`}
+                  >
+                    <div
+                      className={`
+                      p-3 rounded-xl bg-gradient-to-br ${statusConfig.gradient} 
+                      group-hover:scale-110 transition-transform duration-300
+                    `}
+                    >
+                      <FolderIcon className="h-8 w-8 text-white group-hover:animate-wiggle" />
+                    </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 group-hover:text-primary-600 transition-colors">
                         {project.name}
                       </h3>
                       <Badge
-                        variant={
-                          project.status === "completed"
-                            ? "success"
-                            : project.status === "progress"
-                            ? "primary"
-                            : project.status === "on-hold"
-                            ? "warning"
-                            : "default"
-                        }
+                        variant={statusConfig.variant}
                         size="small"
+                        className="animate-pulse-slow"
                       >
+                        <statusConfig.icon className="h-3 w-3 mr-1" />
                         {t(project.status)}
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+
+                  <div
+                    className={`flex items-center ${
+                      isRTL ? "space-x-reverse space-x-2" : "space-x-2"
+                    }`}
+                  >
                     <button
                       onClick={() => handleEditProject(project)}
-                      className="text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                      className={`
+                        p-2 rounded-lg text-neutral-400 hover:text-white transition-all duration-300
+                        hover:bg-gradient-to-r hover:from-primary-400 hover:to-primary-600
+                        hover:scale-110 hover:shadow-glow
+                      `}
                     >
                       <svg
                         className="h-4 w-4"
@@ -237,7 +416,11 @@ const AdminProjects = () => {
                     </button>
                     <button
                       onClick={() => handleDeleteProject(project.id)}
-                      className="text-gray-400 hover:text-error-600 dark:hover:text-error-400 transition-colors"
+                      className={`
+                        p-2 rounded-lg text-neutral-400 hover:text-white transition-all duration-300
+                        hover:bg-gradient-to-r hover:from-error-400 hover:to-error-600
+                        hover:scale-110 hover:shadow-lg
+                      `}
                     >
                       <svg
                         className="h-4 w-4"
@@ -258,24 +441,48 @@ const AdminProjects = () => {
 
                 {/* Description */}
                 {project.description && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                  <p className="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed relative z-10">
                     {project.description}
                   </p>
                 )}
 
                 {/* Progress */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div className="relative z-10">
+                  <div
+                    className={`flex items-center ${
+                      isRTL ? "flex-row-reverse" : ""
+                    } justify-between mb-2`}
+                  >
+                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                       {t("progress")}
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                    <span
+                      className={`
+                      text-sm font-bold px-2 py-1 rounded-full
+                      ${
+                        progress > 80
+                          ? "text-success-600 bg-success-100 dark:bg-success-900/30"
+                          : progress > 50
+                          ? "text-primary-600 bg-primary-100 dark:bg-primary-900/30"
+                          : "text-warning-600 bg-warning-100 dark:bg-warning-900/30"
+                      }
+                    `}
+                    >
                       {progress}%
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div className="w-full h-3 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
                     <div
-                      className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                      className={`
+                        h-full rounded-full transition-all duration-1000 ease-out
+                        ${
+                          progress > 80
+                            ? "bg-gradient-to-r from-success-400 to-success-600"
+                            : progress > 50
+                            ? "bg-gradient-to-r from-primary-400 to-primary-600"
+                            : "bg-gradient-to-r from-warning-400 to-warning-600"
+                        }
+                      `}
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -283,23 +490,52 @@ const AdminProjects = () => {
 
                 {/* Team Members */}
                 {teamMembersData.length > 0 && (
-                  <div className="flex items-center space-x-2">
-                    <div className="flex -space-x-2">
-                      {teamMembersData.slice(0, 3).map((member) => (
-                        <Avatar
-                          key={member.id}
-                          name={member.name}
-                          src={member.avatar}
-                          size="small"
-                          className="border-2 border-white dark:border-gray-800"
-                        />
-                      ))}
+                  <div className="relative z-10">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">
+                      {t("teamMembers")}
+                    </p>
+                    <div
+                      className={`flex ${
+                        isRTL ? "flex-row-reverse" : ""
+                      } -space-x-2`}
+                    >
+                      {teamMembersData
+                        .slice(0, 4)
+                        .map((member, memberIndex) => (
+                          <div
+                            key={member.id}
+                            className="relative group/member"
+                          >
+                            <Avatar
+                              name={member.name}
+                              size="small"
+                              className={`
+                              border-2 border-white dark:border-neutral-800 
+                              hover:scale-110 transition-transform duration-300
+                              animate-bounce-in
+                            `}
+                              style={{
+                                animationDelay: `${memberIndex * 100}ms`,
+                              }}
+                            />
+                            <div
+                              className={`
+                            absolute -top-10 left-1/2 transform -translate-x-1/2 
+                            bg-neutral-800 text-white text-xs py-1 px-2 rounded 
+                            opacity-0 group-hover/member:opacity-100 transition-opacity duration-300
+                            pointer-events-none z-50
+                          `}
+                            >
+                              {member.name}
+                            </div>
+                          </div>
+                        ))}
+                      {teamMembersData.length > 4 && (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-accent-400 to-accent-600 flex items-center justify-center border-2 border-white dark:border-neutral-800 text-white text-xs font-bold">
+                          +{teamMembersData.length - 4}
+                        </div>
+                      )}
                     </div>
-                    {teamMembersData.length > 3 && (
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        +{teamMembersData.length - 3}
-                      </span>
-                    )}
                   </div>
                 )}
               </div>
@@ -308,21 +544,42 @@ const AdminProjects = () => {
         })}
       </div>
 
-      {/* Project Modal */}
+      {/* Enhanced Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={modalMode === "create" ? t("createProject") : t("editProject")}
+        title={
+          <div className="flex items-center gap-3">
+            <div
+              className={`
+              p-2 rounded-lg 
+              ${
+                modalMode === "create"
+                  ? "bg-gradient-to-r from-primary-400 to-primary-600"
+                  : "bg-gradient-to-r from-accent-400 to-accent-600"
+              }
+            `}
+            >
+              <FolderIcon className="h-5 w-5 text-white" />
+            </div>
+            <span className="bg-gradient-happy bg-clip-text text-transparent font-bold">
+              {modalMode === "create" ? t("createProject") : t("editProject")}
+            </span>
+          </div>
+        }
+        className="animate-bounce-in shadow-glow-lg border-0"
       >
-        <ProjectForm
-          formData={formData}
-          errors={errors}
-          loading={loading}
-          onSubmit={handleSubmit}
-          onChange={handleChange}
-          onTeamMemberToggle={handleTeamMemberToggle}
-          mode={modalMode}
-        />
+        <div className="p-2 rounded-xl bg-transparent">
+          <ProjectForm
+            formData={formData}
+            errors={errors}
+            loading={loading}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onTeamMemberToggle={handleTeamMemberToggle}
+            isRTL={isRTL}
+          />
+        </div>
       </Modal>
     </div>
   );

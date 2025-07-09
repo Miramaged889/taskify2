@@ -22,7 +22,11 @@ import Card from "../../components/Common/Card";
 import Select from "../../components/Common/Select";
 import DatePicker from "../../components/Common/DatePicker";
 import Button from "../../components/Common/Button";
-import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentArrowDownIcon,
+  DocumentChartBarIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 
 ChartJS.register(
   CategoryScale,
@@ -330,93 +334,113 @@ const AdminReports = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t("reports")}
-        </h1>
+    <div className="space-y-8 p-6 min-h-screen">
+      <div className="flex items-center justify-between animate-slide-down">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <DocumentChartBarIcon className="h-10 w-10 text-primary-500 animate-bounce-in" />
+            <SparklesIcon className="h-4 w-4 text-accent-400 absolute -top-1 -right-1 animate-pulse-slow" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-happy bg-clip-text text-transparent">
+              {t("reports")}
+            </h1>
+            <p className="text-lg text-neutral-600 dark:text-neutral-400">
+              {t("reportsDescription")}
+            </p>
+          </div>
+        </div>
         <Button
           onClick={handleExportData}
-          icon={<DocumentArrowDownIcon className="h-5 w-5" />}
+          icon={
+            <DocumentArrowDownIcon className="h-5 w-5 animate-bounce-light" />
+          }
           variant="outline"
+          className="hover:scale-105 transform transition-all duration-300 hover:shadow-lg"
         >
           {t("exportData")}
         </Button>
       </div>
 
       {/* Filters */}
-      <Card>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <Card className="transform hover:scale-[1.01] transition-all duration-300 hover:shadow-lg">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
           {t("filters")}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up">
           <Select
             label={t("employee")}
             value={filters.employee}
             onChange={(e) => handleFilterChange("employee", e.target.value)}
             options={employeeOptions}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
           <Select
             label={t("project")}
             value={filters.project}
             onChange={(e) => handleFilterChange("project", e.target.value)}
             options={projectOptions}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
           <Select
             label={t("status")}
             value={filters.status}
             onChange={(e) => handleFilterChange("status", e.target.value)}
             options={statusOptions}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
           <Select
             label={t("priority")}
             value={filters.priority}
             onChange={(e) => handleFilterChange("priority", e.target.value)}
             options={priorityOptions}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
           <DatePicker
             label={t("from")}
             selected={filters.dateRange.start}
             onChange={(date) => handleFilterChange("dateStart", date)}
             maxDate={filters.dateRange.end}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
           <DatePicker
             label={t("to")}
             selected={filters.dateRange.end}
             onChange={(date) => handleFilterChange("dateEnd", date)}
             minDate={filters.dateRange.start}
+            className="focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
           />
         </div>
       </Card>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-gray-900 dark:text-white">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in-up">
+        <Card className="text-center transform hover:scale-105 transition-all duration-300 hover:shadow-lg group">
+          <div className="text-3xl font-bold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors duration-300">
             {stats.total}
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
             {t("totalTasks")}
           </div>
         </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-success-600">
+        <Card className="text-center transform hover:scale-105 transition-all duration-300 hover:shadow-lg group">
+          <div className="text-3xl font-bold text-success-600 group-hover:text-success-500 transition-colors duration-300">
             {stats.completed}
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
             {t("completedTasks")}
           </div>
         </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-error-600">
+        <Card className="text-center transform hover:scale-105 transition-all duration-300 hover:shadow-lg group">
+          <div className="text-3xl font-bold text-error-600 group-hover:text-error-500 transition-colors duration-300">
             {stats.overdue}
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
             {t("overdueTasks")}
           </div>
         </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-primary-600">
+        <Card className="text-center transform hover:scale-105 transition-all duration-300 hover:shadow-lg group">
+          <div className="text-3xl font-bold text-primary-600 group-hover:text-primary-500 transition-colors duration-300">
             {stats.total > 0
               ? Math.round((stats.completed / stats.total) * 100)
               : 0}
@@ -429,50 +453,50 @@ const AdminReports = () => {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in-up">
+        <Card className="transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
             {t("tasksByStatus")}
           </h2>
-          <div className="h-64">
+          <div className="h-64 animate-fade-in">
             <Doughnut data={statusChartData} options={doughnutOptions} />
           </div>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <Card className="transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
             {t("tasksByPriority")}
           </h2>
-          <div className="h-64">
+          <div className="h-64 animate-fade-in">
             <Pie data={priorityChartData} options={doughnutOptions} />
           </div>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <Card className="transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
             {t("employeePerformance")}
           </h2>
-          <div className="h-64">
+          <div className="h-64 animate-fade-in">
             <Radar data={employeePerformanceData} options={radarOptions} />
           </div>
         </Card>
 
-        <Card>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <Card className="transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
             {t("projectProgress")}
           </h2>
-          <div className="h-64">
+          <div className="h-64 animate-fade-in">
             <Line data={projectProgressData} options={lineOptions} />
           </div>
         </Card>
       </div>
 
       {/* Detailed Task Table */}
-      <Card>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <Card className="transform hover:scale-[1.01] transition-all duration-300 hover:shadow-lg">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
           {t("detailedTaskList")} ({filteredTasks.length} {t("tasks")})
         </h2>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto animate-fade-in">
           <table className="w-full text-sm text-left rtl:text-right">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
@@ -497,14 +521,15 @@ const AdminReports = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTasks.map((task) => {
+              {filteredTasks.map((task, index) => {
                 const assignee = members.find((m) => m.id === task.assignee);
                 const project = projects.find((p) => p.id === task.project);
 
                 return (
                   <tr
                     key={task.id}
-                    className="border-b border-gray-200 dark:border-gray-700"
+                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 animate-fade-in-up"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <td className="py-3 px-4 text-gray-900 dark:text-white">
                       {task.title}
@@ -517,14 +542,14 @@ const AdminReports = () => {
                     </td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
+                        className={`px-2 py-1 text-xs rounded-full transform hover:scale-105 transition-all duration-300 ${
                           task.status === "completed"
-                            ? "bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200"
+                            ? "bg-gradient-to-r from-success-100 to-success-200 text-success-800 dark:from-success-900 dark:to-success-800 dark:text-success-200"
                             : task.status === "progress"
-                            ? "bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200"
+                            ? "bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 dark:from-primary-900 dark:to-primary-800 dark:text-primary-200"
                             : task.status === "review"
-                            ? "bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                            ? "bg-gradient-to-r from-warning-100 to-warning-200 text-warning-800 dark:from-warning-900 dark:to-warning-800 dark:text-warning-200"
+                            : "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 dark:from-gray-900 dark:to-gray-800 dark:text-gray-200"
                         }`}
                       >
                         {t(task.status)}
@@ -532,14 +557,14 @@ const AdminReports = () => {
                     </td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
+                        className={`px-2 py-1 text-xs rounded-full transform hover:scale-105 transition-all duration-300 ${
                           task.priority === "urgent"
-                            ? "bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200"
+                            ? "bg-gradient-to-r from-error-100 to-error-200 text-error-800 dark:from-error-900 dark:to-error-800 dark:text-error-200"
                             : task.priority === "high"
-                            ? "bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200"
+                            ? "bg-gradient-to-r from-warning-100 to-warning-200 text-warning-800 dark:from-warning-900 dark:to-warning-800 dark:text-warning-200"
                             : task.priority === "medium"
-                            ? "bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200"
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                            ? "bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 dark:from-primary-900 dark:to-primary-800 dark:text-primary-200"
+                            : "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 dark:from-gray-900 dark:to-gray-800 dark:text-gray-200"
                         }`}
                       >
                         {t(task.priority)}

@@ -19,6 +19,7 @@ import {
   PhoneIcon,
   VideoCameraIcon,
   InformationCircleIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "react-hot-toast";
 
@@ -229,26 +230,41 @@ const AdminChat = () => {
   );
 
   return (
-    <div className={`space-y-6 ${directionClass}`} dir={isRTL ? "rtl" : "ltr"}>
+    <div
+      className={`space-y-8 p-6 min-h-screen ${directionClass} animate-fade-in`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <div
         className={`flex items-center ${
           isRTL ? "flex-row justify-between" : "justify-between"
-        }`}
+        } animate-slide-down`}
       >
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t("chat")}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {t("chatDescription")}
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <ChatBubbleLeftEllipsisIcon className="h-10 w-10 text-primary-500 animate-bounce-in" />
+            <SparklesIcon className="h-4 w-4 text-accent-400 absolute -top-1 -right-1 animate-pulse-slow" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-500 via-accent-500 to-info-500 bg-clip-text text-transparent">
+              {t("chat")}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1 animate-fade-in-delay">
+              {t("chatDescription")}
+            </p>
+          </div>
         </div>
         {activeTab === "group" && (
           <Button
             onClick={() => setIsGroupModalOpen(true)}
-            className={`flex items-center ${isRTL ? "flex-row-reverse" : ""}`}
+            className={`flex items-center ${
+              isRTL ? "flex-row-reverse" : ""
+            } hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-primary-500/30`}
           >
-            <PlusIcon className={`h-5 w-5 ${isRTL ? "ml-2" : "mr-2"}`} />
+            <PlusIcon
+              className={`h-5 w-5 ${
+                isRTL ? "ml-2" : "mr-2"
+              } animate-bounce-light`}
+            />
             <span>{t("newGroupChat")}</span>
           </Button>
         )}
@@ -256,45 +272,57 @@ const AdminChat = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-220px)]">
         {/* Sidebar */}
-        <div className={`lg:col-span-1 ${isRTL ? "order-2" : "order-1"}`}>
-          <Card className="p-0 h-full flex flex-col">
+        <div
+          className={`lg:col-span-1 ${
+            isRTL ? "order-2" : "order-1"
+          } animate-slide-right`}
+        >
+          <Card className="p-0 h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
             {/* Chat Type Tabs */}
             <div className="flex border-b border-gray-200 dark:border-gray-700">
               <button
-                className={`flex-1 py-3 text-sm font-medium ${
+                className={`flex-1 py-3 text-sm font-medium relative overflow-hidden ${
                   activeTab === "individual"
-                    ? "text-primary-600 border-b-2 border-primary-600"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    ? "text-primary-600 border-b-2 border-primary-600 hover:bg-primary-50/50 transition-colors"
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50/50 transition-colors"
                 }`}
                 onClick={() => setActiveTab("individual")}
               >
                 {t("individual")}
+                {activeTab === "individual" && (
+                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 animate-slide-right" />
+                )}
               </button>
               <button
-                className={`flex-1 py-3 text-sm font-medium ${
+                className={`flex-1 py-3 text-sm font-medium relative overflow-hidden ${
                   activeTab === "group"
-                    ? "text-primary-600 border-b-2 border-primary-600"
-                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    ? "text-primary-600 border-b-2 border-primary-600 hover:bg-primary-50/50 transition-colors"
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50/50 transition-colors"
                 }`}
                 onClick={() => setActiveTab("group")}
               >
                 {t("groups")}
+                {activeTab === "group" && (
+                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 animate-slide-right" />
+                )}
               </button>
             </div>
 
             {/* Search */}
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-              <div className="relative">
+              <div className="relative group">
                 <MagnifyingGlassIcon
                   className={`absolute ${
                     isRTL ? "left-3" : "right-3"
-                  } top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400`}
+                  } top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300`}
                 />
                 <Input
                   placeholder={t("searchConversations")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={isRTL ? "pl-12 text-right" : "pr-12 text-left"}
+                  className={`${
+                    isRTL ? "pl-12 text-right" : "pr-12 text-left"
+                  } focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 hover:shadow-md`}
                 />
               </div>
             </div>
@@ -302,8 +330,8 @@ const AdminChat = () => {
             {/* Conversations List */}
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-4 text-center">
-                  <ChatBubbleLeftEllipsisIcon className="h-12 w-12 text-gray-400 mb-2" />
+                <div className="flex flex-col items-center justify-center h-full p-4 text-center animate-fade-in">
+                  <ChatBubbleLeftEllipsisIcon className="h-12 w-12 text-gray-400 mb-2 animate-bounce-slow" />
                   <p className="text-gray-500 dark:text-gray-400">
                     {searchQuery
                       ? t("noConversationsFound")
@@ -313,18 +341,23 @@ const AdminChat = () => {
                   </p>
                 </div>
               ) : (
-                conversations.map((conversation) => (
+                conversations.map((conversation, index) => (
                   <div
                     key={conversation.id}
                     onClick={() => setActiveConversation(conversation)}
                     className={`
-                      p-4 cursor-pointer transition-colors
+                      p-4 cursor-pointer transition-all duration-300
+                      hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50
+                      dark:hover:from-primary-900/20 dark:hover:to-accent-900/20
+                      transform hover:scale-[1.02]
+                      animate-fade-in-up
                       ${
                         activeConversation?.id === conversation.id
-                          ? "bg-primary-50 dark:bg-primary-900"
-                          : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                          ? "bg-primary-50 dark:bg-primary-900/30 shadow-md"
+                          : "hover:shadow-lg"
                       }
                     `}
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div
                       className={`flex items-start ${
@@ -384,8 +417,12 @@ const AdminChat = () => {
         </div>
 
         {/* Chat Area */}
-        <div className={`lg:col-span-3 ${isRTL ? "order-2" : "order-1"}`}>
-          <Card className="p-0 h-full flex flex-col">
+        <div
+          className={`lg:col-span-3 ${
+            isRTL ? "order-2" : "order-1"
+          } animate-slide-left`}
+        >
+          <Card className="p-0 h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
             {activeConversation ? (
               <>
                 {renderChatHeader()}
@@ -411,20 +448,21 @@ const AdminChat = () => {
                             : isRTL
                             ? "justify-start"
                             : "justify-end"
-                        }`}
+                        } animate-fade-in-up`}
+                        style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div
                           className={`flex items-end ${
                             isOwnMessage !== isRTL
                               ? "flex-row space-x-2"
                               : "space-x-2"
-                          } max-w-[80%]`}
+                          } max-w-[80%] group`}
                         >
                           {showAvatar && !isOwnMessage && (
                             <Avatar
                               name={sender?.name}
                               size="small"
-                              className="mb-1"
+                              className="mb-1 transform group-hover:scale-110 transition-transform duration-300"
                             />
                           )}
                           <div
@@ -437,21 +475,22 @@ const AdminChat = () => {
                             {showAvatar &&
                               !isOwnMessage &&
                               activeConversation?.type === "group" && (
-                                <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                <span className="text-xs text-gray-500 dark:text-gray-400 mb-1 animate-fade-in">
                                   {sender?.name}
                                 </span>
                               )}
                             <div
                               className={`
-                                px-4 py-2 rounded-2xl
+                                px-4 py-2 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300
+                                transform hover:scale-[1.02]
                                 ${
                                   isOwnMessage
-                                    ? `bg-primary-600 text-white ${
+                                    ? `bg-gradient-to-r from-primary-500 to-primary-600 text-white ${
                                         isRTL
                                           ? "rounded-bl-md"
                                           : "rounded-br-md"
                                       }`
-                                    : `bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white ${
+                                    : `bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 text-gray-900 dark:text-white ${
                                         isRTL
                                           ? "rounded-br-md"
                                           : "rounded-bl-md"
@@ -463,7 +502,7 @@ const AdminChat = () => {
                                 {message.content}
                               </p>
                             </div>
-                            <span className="text-xs text-gray-400 mt-1">
+                            <span className="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               {formatTime(message.timestamp)}
                             </span>
                           </div>
@@ -472,7 +511,7 @@ const AdminChat = () => {
                     );
                   })}
                 </div>
-                <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="p-4 border-t border-gray-200 dark:border-gray-700 animate-slide-up">
                   <div
                     className={`flex items-center ${
                       isRTL ? "flex-row space-x-reverse space-x-3" : "space-x-3"
@@ -486,20 +525,24 @@ const AdminChat = () => {
                         onKeyPress={handleKeyPress}
                         className={`resize-none h-10 ${
                           isRTL ? "text-right" : "text-left"
-                        }`}
+                        } focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 hover:shadow-md`}
                       />
                     </div>
                     <Button
                       onClick={handleSendMessage}
                       className={`shrink-0 flex items-center h-10 ${
                         isRTL ? "flex-row justify-between mr-2" : ""
+                      } transform hover:scale-105 transition-all duration-300 ${
+                        !newMessage.trim()
+                          ? "opacity-50"
+                          : "hover:shadow-primary-500/30"
                       }`}
                       disabled={!newMessage.trim()}
                     >
                       <PaperAirplaneIcon
                         className={`h-4 w-4 ${
                           isRTL ? "ml-2 transform rotate-180" : "mr-2"
-                        }`}
+                        } ${newMessage.trim() ? "animate-pulse" : ""}`}
                       />
                       <span>{t("send")}</span>
                     </Button>
@@ -507,8 +550,8 @@ const AdminChat = () => {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full p-4 text-center">
-                <ChatBubbleLeftEllipsisIcon className="h-16 w-16 text-gray-400 mb-4" />
+              <div className="flex flex-col items-center justify-center h-full p-4 text-center animate-fade-in">
+                <ChatBubbleLeftEllipsisIcon className="h-16 w-16 text-gray-400 mb-4 animate-bounce-slow" />
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                   {t("selectConversation")}
                 </h3>

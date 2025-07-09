@@ -1,12 +1,7 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../utils/translations";
-import {
-  formatDate,
-  getPriorityColor,
-  getStatusColor,
-} from "../../utils/helpers";
-import { ClockIcon, UserIcon, FolderIcon } from "@heroicons/react/24/outline";
+import { formatDate } from "../../utils/helpers";
+import { ClockIcon, FolderIcon } from "@heroicons/react/24/outline";
 import Card from "../Common/Card";
 import Badge from "../Common/Badge";
 import Avatar from "../Common/Avatar";

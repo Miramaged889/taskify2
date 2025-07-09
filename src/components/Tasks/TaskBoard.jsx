@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { moveTask, updateTask } from "../../store/slices/taskSlice";
-import { deleteTask } from "../../store/slices/taskSlice";
+import { deleteTask, addTask } from "../../store/slices/taskSlice";
 import { useTranslation } from "../../utils/translations";
 import TaskCard from "./TaskCard";
-import TaskModal from "./TaskModal";
-import Button from "../Common/Button";
+import TaskForm from "../forms/adminForms/TaskForm";
+import Modal from "../Common/Modal";
 import Badge from "../Common/Badge";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import { generateId } from "../../utils/helpers";
 
 const TaskBoard = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,17 @@ const TaskBoard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [modalMode, setModalMode] = useState("create");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    status: "todo",
+    priority: "medium",
+    assignee: "",
+    project: "",
+    dueDate: null,
+  });
+  const [errors, setErrors] = useState({});
 
   const stageConfig = [
     {
@@ -72,15 +83,19 @@ const TaskBoard = () => {
     toast.success(t("taskMovedTo") + " " + t(newStatus));
   };
 
-  const handleCreateTask = () => {
-    setSelectedTask(null);
-    setModalMode("create");
-    setIsModalOpen(true);
-  };
-
   const handleEditTask = (task) => {
     setSelectedTask(task);
     setModalMode("edit");
+    setFormData({
+      title: task.title || "",
+      description: task.description || "",
+      status: task.status || "todo",
+      priority: task.priority || "medium",
+      assignee: task.assignee || "",
+      project: task.project || "",
+      dueDate: task.dueDate ? new Date(task.dueDate) : null,
+    });
+    setErrors({});
     setIsModalOpen(true);
   };
 
@@ -91,26 +106,63 @@ const TaskBoard = () => {
     }
   };
 
+  const handleFormChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const taskData = {
+        ...formData,
+        dueDate: formData.dueDate ? formData.dueDate.toISOString() : null,
+        updatedAt: new Date().toISOString(),
+      };
+
+      if (modalMode === "create") {
+        taskData.id = generateId();
+        taskData.createdAt = new Date().toISOString();
+        taskData.createdBy = "1"; // Current user ID
+
+        dispatch(addTask(taskData));
+        toast.success(t("taskCreated"));
+      } else {
+        taskData.id = selectedTask.id;
+        taskData.createdAt = selectedTask.createdAt;
+        taskData.createdBy = selectedTask.createdBy;
+
+        dispatch(updateTask(taskData));
+        toast.success(t("taskUpdated"));
+      }
+
+      handleModalClose();
+    } catch {
+      toast.error(t("serverError"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedTask(null);
+    setErrors({});
   };
 
   return (
     <div className="h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t("tasks")}
-        </h1>
-        <Button
-          onClick={handleCreateTask}
-          icon={<PlusIcon className="h-5 w-5" />}
-        >
-          {t("add")} {t("task")}
-        </Button>
-      </div>
-
+     
       {/* Task Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -185,12 +237,21 @@ const TaskBoard = () => {
       </DragDropContext>
 
       {/* Task Modal */}
-      <TaskModal
+      <Modal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        task={selectedTask}
-        mode={modalMode}
-      />
+        title={modalMode === "create" ? t("createTask") : t("editTask")}
+      >
+        <TaskForm
+          formData={formData}
+          errors={errors}
+          loading={loading}
+          onSubmit={handleFormSubmit}
+          onChange={handleFormChange}
+          onAssigneeChange={(value) => handleFormChange("assignee", value)}
+          mode={modalMode}
+        />
+      </Modal>
     </div>
   );
 };

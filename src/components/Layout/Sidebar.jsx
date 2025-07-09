@@ -1,157 +1,179 @@
-import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "../../utils/translations";
+import PropTypes from "prop-types";
 import {
   HomeIcon,
-  ClipboardDocumentListIcon,
-  FolderIcon,
-  CalendarDaysIcon,
-  ChartBarIcon,
-  UsersIcon,
+  CalendarIcon,
   ChatBubbleLeftRightIcon,
+  FolderIcon,
+  ClipboardDocumentListIcon,
+  UsersIcon,
+  ChartBarIcon,
   Cog6ToothIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-const Sidebar = ({ isOpen, onClose }) => {
-  const { role } = useSelector((state) => state.auth);
+const Sidebar = ({ isOpen, setIsOpen }) => {
+  const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
   const { language } = useSelector((state) => state.settings);
   const { t } = useTranslation(language);
   const isRTL = language === "ar";
 
-  const employeeNavItems = [
-    { name: t("dashboard"), href: "/employee", icon: HomeIcon, end: true },
+  const navigation = [
+    {
+      name: t("dashboard"),
+      icon: HomeIcon,
+      href: "/admin",
+      roles: ["admin"],
+    },
     {
       name: t("tasks"),
-      href: "/employee/tasks",
       icon: ClipboardDocumentListIcon,
+      href: "/admin/tasks",
+      roles: ["admin", "employee"],
     },
-    { name: t("calendar"), href: "/employee/calendar", icon: CalendarDaysIcon },
-    { name: t("reports"), href: "/employee/reports", icon: ChartBarIcon },
-    { name: t("chat"), href: "/employee/chat", icon: ChatBubbleLeftRightIcon },
-    { name: t("settings"), href: "/employee/settings", icon: Cog6ToothIcon },
+    {
+      name: t("calendar"),
+      icon: CalendarIcon,
+      href: "/admin/calendar",
+      roles: ["admin", "employee"],
+    },
+    {
+      name: t("chat"),
+      icon: ChatBubbleLeftRightIcon,
+      href: "/admin/chat",
+      roles: ["admin", "employee"],
+    },
+    {
+      name: t("projects"),
+      icon: FolderIcon,
+      href: "/admin/projects",
+      roles: ["admin"],
+    },
+    {
+      name: t("team"),
+      icon: UsersIcon,
+      href: "/admin/team",
+      roles: ["admin"],
+    },
+    {
+      name: t("reports"),
+      icon: ChartBarIcon,
+      href: "/admin/reports",
+      roles: ["admin"],
+    },
+    {
+      name: t("settings"),
+      icon: Cog6ToothIcon,
+      href: "/admin/settings",
+      roles: ["admin", "employee"],
+    },
   ];
 
-  const adminNavItems = [
-    { name: t("dashboard"), href: "/admin", icon: HomeIcon, end: true },
-    { name: t("projects"), href: "/admin/projects", icon: FolderIcon },
-    { name: t("tasks"), href: "/admin/tasks", icon: ClipboardDocumentListIcon },
-    { name: t("calendar"), href: "/admin/calendar", icon: CalendarDaysIcon },
-    { name: t("reports"), href: "/admin/reports", icon: ChartBarIcon },
-    { name: t("team"), href: "/admin/team", icon: UsersIcon },
-    { name: t("chat"), href: "/admin/chat", icon: ChatBubbleLeftRightIcon },
-    { name: t("settings"), href: "/admin/settings", icon: Cog6ToothIcon },
-  ];
-
-  const navItems = role === "admin" ? adminNavItems : employeeNavItems;
+  const filteredNavigation = navigation.filter((item) =>
+    item.roles.includes(user?.role)
+  );
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40 md:hidden"
-          onClick={onClose}
+          className="fixed inset-0 bg-neutral-900/20 backdrop-blur-sm dark:bg-neutral-900/80 lg:hidden"
+          onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
         className={`
-          fixed ${isRTL ? "right-0" : "left-0"} inset-y-0 z-50 w-72
-          bg-white dark:bg-gray-800/95 shadow-lg backdrop-blur-sm
-          transform transition-all duration-300 ease-in-out
+          fixed top-0 h-screen flex flex-col ${isRTL ? "right-0" : "left-0"}
+          z-20 w-64 bg-white dark:bg-neutral-800/50 backdrop-blur-xl
+          border-r border-neutral-200/80 dark:border-neutral-700/80
+          transform transition-all duration-500 ease-in-out
           ${
             isOpen
-              ? isRTL
-                ? "-translate-x-0"
-                : "translate-x-0"
+              ? "translate-x-0"
               : isRTL
-              ? "translate-x-full"
-              : "-translate-x-full"
+              ? "translate-x-64"
+              : "-translate-x-64"
           }
-          md:translate-x-0 md:static md:inset-0
+          lg:translate-x-0 lg:static
         `}
       >
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center h-16 px-6 border-b border-gray-200 dark:border-gray-700/50">
-            <div
-              className={`flex items-center ${isRTL ? "flex-row" : ""} gap-3`}
-            >
-              <img
-                src={"public/TaskifyIcon.png"}
-                alt="Taskify Logo"
-                className="w-10 h-10 object-contain filter dark:brightness-110"
-              />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                {t("appName")}
-              </h1>
-            </div>
-          </div>
+        {/* Logo */}
+        <div className="flex-shrink-0 flex items-center justify-between h-16 px-6 border-b border-neutral-200/80 dark:border-neutral-700/80">
+          <Link
+            to="/admin/dashboard"
+            className="flex items-center gap-2 transition-transform duration-300 hover:scale-105"
+            onClick={() => setIsOpen(false)}
+          >
+            <img src="/TaskifyIcon.png" alt="Taskify" className="h-8 w-8" />
+            <span className="text-xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+              Taskify
+            </span>
+          </Link>
+          <button
+            className="lg:hidden text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors duration-300"
+            onClick={() => setIsOpen(false)}
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 overflow-y-auto">
-            <div className="space-y-1.5">
-              {navItems.map((item) => (
-                <NavLink
+        {/* Navigation */}
+        <nav className="flex-1 flex flex-col justify-between">
+          <div className="p-4 space-y-2">
+            {filteredNavigation.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
                   key={item.name}
                   to={item.href}
-                  end={item.end}
-                  className={({ isActive }) =>
-                    `group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
+                  onClick={() => setIsOpen(false)}
+                  className={`
+                    relative flex items-center gap-3 px-4 py-3 rounded-xl
+                    transition-all duration-300 ease-out transform
+                    overflow-hidden group
                     ${
                       isActive
-                        ? "bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 shadow-sm"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                        ? "bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg shadow-primary-500/20"
+                        : "hover:bg-neutral-100 dark:hover:bg-neutral-700/50 text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 hover:translate-x-1"
                     }
-                    ${isRTL ? "flex-row" : ""}
-                    transform hover:scale-[1.02] active:scale-[0.98]`
-                  }
-                  onClick={onClose}
+                  `}
                 >
                   <item.icon
-                    className={`h-5 w-5 flex-shrink-0 transition-colors duration-200
-                      ${isRTL ? "ml-3" : "mr-3"}
-                      group-hover:text-primary-500
-                    `}
+                    className={`h-5 w-5 transition-all duration-300 ${
+                      isActive
+                        ? "text-white"
+                        : "text-neutral-500 dark:text-neutral-400"
+                    } group-hover:scale-110 group-hover:rotate-3`}
                   />
-                  <span className="truncate">{item.name}</span>
-                </NavLink>
-              ))}
-            </div>
-          </nav>
+                  <span className="font-medium">{item.name}</span>
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-accent-500/10 animate-pulse" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
 
-          {/* User Section */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700/50">
-            <div
-              className={`flex items-center ${
-                isRTL ? "flex-row-reverse" : ""
-              } space-x-3 
-              p-3 rounded-xl bg-gray-50 dark:bg-gray-700/30 transition-transform hover:scale-[1.02]`}
-            >
-              <div className="flex-shrink-0">
-                <div
-                  className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 
-                  flex items-center justify-center shadow-inner"
-                >
-                  <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
-                    {role === "admin" ? "A" : "E"}
-                  </span>
-                </div>
-              </div>
-              <div
-                className={`flex-1 min-w-0 ${
-                  isRTL ? "text-right" : "text-left"
-                }`}
-              >
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {role === "admin" ? t("adminRole") : t("employeeRole")}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {t("loggedInAs")}
-                </p>
-              </div>
+        {/* User Info */}
+        <div className="flex-shrink-0 p-4 border-t border-neutral-200/80 dark:border-neutral-700/80">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-neutral-50 dark:bg-neutral-700/50 transition-transform duration-300 hover:scale-[1.02]">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold transform transition-transform duration-300 hover:rotate-12">
+              {user?.name?.charAt(0) || "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-neutral-900 dark:text-white truncate">
+                {user?.name || "User"}
+              </p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                {user?.email || "user@example.com"}
+              </p>
             </div>
           </div>
         </div>
@@ -162,7 +184,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
 Sidebar.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

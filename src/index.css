@@ -47,6 +47,10 @@ body {
 .font-english {
   font-family: "Inter", sans-serif;
 }
+html {
+  scroll-behavior: smooth;
+  overflow: hidden;
+}
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

@@ -1,22 +1,22 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import PropTypes from "prop-types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import Button from "./Button";
 
 const Modal = ({
   isOpen,
   onClose,
-  title,
+  title = "",
   children,
-  footer,
+  footer = null,
   size = "medium",
   closable = true,
   className = "",
 }) => {
   const sizeClasses = {
-    small: "max-w-md",
-    medium: "max-w-2xl",
-    large: "max-w-4xl",
-    full: "max-w-full mx-4",
+    small: "max-w-sm",
+    medium: "max-w-lg",
+    large: "max-w-2xl",
+    full: "max-w-4xl mx-4",
   };
 
   useEffect(() => {
@@ -49,39 +49,59 @@ const Modal = ({
 
   if (!isOpen) return null;
 
+  const handleOverlayClick = (e) => {
+    if (closable && e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="modal-overlay" onClick={closable ? onClose : undefined}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+      onClick={handleOverlayClick}
+    >
       <div
-        className={`modal-content ${sizeClasses[size]} ${className}`}
+        className={`relative w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-neutral-900 rounded-xl shadow-xl border border-gray-200/50 dark:border-neutral-700/50 ${sizeClasses[size]} ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-600">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-gray-200/50 dark:border-neutral-700/50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm rounded-t-xl">
+          <div className="text-lg font-semibold text-gray-900 dark:text-white">
             {title}
-          </h2>
+          </div>
           {closable && (
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
             >
-              <XMarkIcon className="h-6 w-6" />
+              <XMarkIcon className="h-5 w-5" />
             </button>
           )}
         </div>
 
         {/* Body */}
-        <div className="p-6 flex-1">{children}</div>
+        <div className="p-4">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-600">
+          <div className="sticky bottom-0 z-10 flex items-center justify-end gap-3 p-4 border-t border-gray-200/50 dark:border-neutral-700/50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm rounded-b-xl">
             {footer}
           </div>
         )}
       </div>
     </div>
   );
+};
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  children: PropTypes.node.isRequired,
+  footer: PropTypes.node,
+  size: PropTypes.oneOf(["small", "medium", "large", "full"]),
+  closable: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default Modal;
