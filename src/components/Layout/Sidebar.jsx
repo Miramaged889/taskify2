@@ -32,19 +32,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       name: t("tasks"),
       icon: ClipboardDocumentListIcon,
       href: "/admin/tasks",
-      roles: ["admin", "employee"],
+      roles: ["admin"],
     },
     {
       name: t("calendar"),
       icon: CalendarIcon,
       href: "/admin/calendar",
-      roles: ["admin", "employee"],
+      roles: ["admin"],
     },
     {
       name: t("chat"),
       icon: ChatBubbleLeftRightIcon,
       href: "/admin/chat",
-      roles: ["admin", "employee"],
+      roles: ["admin"],
     },
     {
       name: t("projects"),
@@ -68,7 +68,43 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       name: t("settings"),
       icon: Cog6ToothIcon,
       href: "/admin/settings",
-      roles: ["admin", "employee"],
+      roles: ["admin"],
+    },
+    {
+      name: t("dashboard"),
+      icon: HomeIcon,
+      href: "/employee",
+      roles: ["employee"],
+    },
+    {
+      name: t("tasks"),
+      icon: ClipboardDocumentListIcon,
+      href: "/employee/tasks",
+      roles: ["employee"],
+    },
+    {
+      name: t("calendar"),
+      icon: CalendarIcon,
+      href: "/employee/calendar",
+      roles: ["employee"],
+    },
+    {
+      name: t("chat"),
+      icon: ChatBubbleLeftRightIcon,
+      href: "/employee/chat",
+      roles: ["employee"],
+    },
+    {
+      name: t("reports"),
+      icon: ChartBarIcon,
+      href: "/employee/reports",
+      roles: ["employee"],
+    },
+    {
+      name: t("settings"),
+      icon: Cog6ToothIcon,
+      href: "/employee/settings",
+      roles: ["employee"],
     },
   ];
 

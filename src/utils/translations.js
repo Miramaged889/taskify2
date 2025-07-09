@@ -328,6 +328,25 @@ export const translations = {
     calendarDescription: "Manage your tasks and projects",
     teamDescription: "Manage your team members",
     reportsDescription: "View your reports and analytics",
+
+    // Employee Settings
+    personalPreferences: "Personal Preferences",
+    appearanceAndLocalization: "Appearance and Localization",
+    notificationPreferences: "Notification Preferences",
+    manageAlerts: "Manage Alerts",
+    workSchedule: "Work Schedule",
+    schedulePreferences: "Schedule Preferences",
+    selectWorkDay: "Select Work Day",
+    employeePortal: "Employee Portal",
+    myReports: "My Reports",
+    myReportsDescription: "View your reports and analytics",
+    filterByPriority: "Filter by Priority",
+    filterByStatus: "Filter by Status",
+    filterByDate: "Filter by Date",
+
+    // Task Management
+    reviewTasks: "Review Tasks",
+    myProjects: "My Projects",
   },
   ar: {
     // Common
@@ -664,6 +683,24 @@ export const translations = {
     reportsDescription: "عرض تقاريرك والتحليلات",
     groupName: "اسم المجموعة",
     createGroupChat: "إنشاء محادثة جماعية",
+
+    // Employee Settings
+    personalPreferences: "التفضيلات الشخصية",
+    appearanceAndLocalization: "المظهر والتحليل",
+    notificationPreferences: "إعدادات الإشعارات",
+    manageAlerts: "إدارة الإشعارات",
+    workSchedule: "جدول العمل",
+    schedulePreferences: "إعدادات جدول العمل",
+    selectWorkDay: "اختر أيام العمل",
+    employeePortal: "بوابة الموظفين",
+    myReports: "تقاريري",
+    myReportsDescription: "عرض تقاريرك والتحليلات",
+    filterByPriority: "تصفية حسب الأولوية",
+    filterByStatus: "تصفية حسب الحالة",
+
+    // Task Management
+    reviewTasks: "مهام المراجعة",
+    myProjects: "مشاريعي",
   },
 };
 

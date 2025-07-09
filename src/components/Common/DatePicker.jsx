@@ -1,4 +1,3 @@
-
 import ReactDatePicker from "react-datepicker";
 import PropTypes from "prop-types";
 import "react-datepicker/dist/react-datepicker.css";
@@ -50,6 +49,31 @@ const DatePicker = ({
         placeholderText={placeholder}
         className={datePickerClasses}
         dateFormat="MMM dd, yyyy"
+        popperPlacement="top"
+        popperProps={{
+          positionFixed: true,
+          modifiers: [
+            {
+              name: "flip",
+              options: {
+                fallbackPlacements: ["top"],
+              },
+            },
+            {
+              name: "preventOverflow",
+              options: {
+                mainAxis: true,
+                altAxis: true,
+              },
+            },
+            {
+              name: "offset",
+              options: {
+                offset: [0, 10],
+              },
+            },
+          ],
+        }}
         {...props}
       />
       {error && (

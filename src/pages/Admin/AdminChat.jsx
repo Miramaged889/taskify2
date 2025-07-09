@@ -141,7 +141,7 @@ const AdminChat = () => {
   };
 
   const renderChatHeader = () => (
-    <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+    <div className="p-4 border-b border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
       <div
         className={`flex items-center ${
           isRTL ? "flex-row justify-between" : "justify-between"

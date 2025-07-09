@@ -151,7 +151,7 @@ const AdminDashboard = () => {
         labels: {
           usePointStyle: true,
           padding: 20,
-          color: "#1f2937",
+          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
           font: {
             size: 12,
             weight: "500",
@@ -161,9 +161,9 @@ const AdminDashboard = () => {
       tooltip: {
         rtl: isRTL,
         textDirection: isRTL ? "rtl" : "ltr",
-        backgroundColor: "rgba(17, 24, 39, 0.95)",
-        titleColor: "#f9fafb",
-        bodyColor: "#f9fafb",
+        backgroundColor: document.documentElement.classList.contains('dark') ? "rgba(17, 24, 39, 0.95)" : "rgba(255, 255, 255, 0.95)",
+        titleColor: document.documentElement.classList.contains('dark') ? "#f9fafb" : "#111827",
+        bodyColor: document.documentElement.classList.contains('dark') ? "#f9fafb" : "#111827",
         borderColor: "#f0760a",
         borderWidth: 2,
         cornerRadius: 8,
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
           display: false,
         },
         ticks: {
-          color: "#4b5563",
+          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
           font: {
             size: 11,
             weight: "500",
@@ -190,7 +190,7 @@ const AdminDashboard = () => {
           drawBorder: false,
         },
         ticks: {
-          color: "#4b5563",
+          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
           font: {
             size: 11,
             weight: "500",
