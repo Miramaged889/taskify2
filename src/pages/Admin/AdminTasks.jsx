@@ -35,6 +35,7 @@ const AdminTasks = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
 
   const handleCreateTask = () => {
     setSelectedTask(null);
@@ -48,6 +49,7 @@ const AdminTasks = () => {
       priority: "medium",
       status: "todo",
     });
+    setNotificationEnabled(false);
     setIsModalOpen(true);
   };
 
@@ -63,6 +65,7 @@ const AdminTasks = () => {
       priority: task.priority,
       status: task.status,
     });
+    setNotificationEnabled(task.notificationEnabled || false);
     setIsModalOpen(true);
   };
 
@@ -110,6 +113,7 @@ const AdminTasks = () => {
       const taskData = {
         ...formData,
         dueDate: formData.dueDate ? formData.dueDate.toISOString() : null,
+        notificationEnabled: notificationEnabled,
         updatedAt: new Date().toISOString(),
       };
 
@@ -169,6 +173,7 @@ const AdminTasks = () => {
       priority: "medium",
       status: "todo",
     });
+    setNotificationEnabled(false);
   };
 
   return (
@@ -244,6 +249,8 @@ const AdminTasks = () => {
           onChange={handleChange}
           onAssigneeChange={(value) => handleChange("assignee", value)}
           mode={modalMode}
+          notificationEnabled={notificationEnabled}
+          onNotificationToggle={setNotificationEnabled}
         />
       </Modal>
     </div>

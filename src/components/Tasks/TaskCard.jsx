@@ -1,19 +1,18 @@
 import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
 import { useTranslation } from "../../utils/translations";
 import { formatDate } from "../../utils/helpers";
-import { ClockIcon, FolderIcon } from "@heroicons/react/24/outline";
+import { Clock, Edit, Trash2 } from "lucide-react";
 import Card from "../Common/Card";
 import Badge from "../Common/Badge";
 import Avatar from "../Common/Avatar";
 
-const TaskCard = ({ task, onEdit, onDelete, isDragging = false }) => {
+const TaskCard = ({ task, onEdit, onDelete, onView, isDragging = false }) => {
   const { language } = useSelector((state) => state.settings);
   const { members } = useSelector((state) => state.team);
-  const { projects } = useSelector((state) => state.projects);
   const { t } = useTranslation(language);
 
   const assignee = members.find((m) => m.id === task.assignee);
-  const project = projects.find((p) => p.id === task.project);
 
   const getStatusConfig = (status) => {
     const configs = {
@@ -29,67 +28,51 @@ const TaskCard = ({ task, onEdit, onDelete, isDragging = false }) => {
 
   return (
     <Card
-      className={`task-card cursor-grab ${
+      className={`task-card cursor-pointer ${
         isDragging ? "dragging shadow-lg scale-105" : ""
-      } transition-all duration-200`}
+      } transition-all duration-200 hover:shadow-md`}
+      onClick={() => onView(task)}
       padding="normal"
       hover
     >
       <div className="space-y-3">
-        {/* Header */}
+        {/* Header with Title and Actions */}
         <div className="flex items-start justify-between">
-          <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2">
+          <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2 flex-1 pr-2">
             {task.title}
           </h3>
-          <div className="flex items-center space-x-2 ml-2">
+          <div className="flex items-center space-x-1">
             <button
-              onClick={() => onEdit(task)}
-              className="text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(task);
+              }}
+              className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded"
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
+              <Edit className="h-4 w-4" />
             </button>
             <button
-              onClick={() => onDelete(task.id)}
-              className="text-gray-400 hover:text-error-600 dark:hover:text-error-400 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(task.id);
+              }}
+              className="p-1 text-gray-400 hover:text-error-600 dark:hover:text-error-400 transition-colors rounded"
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
+              <Trash2 className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Description */}
-        {task.description && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-            {task.description}
-          </p>
-        )}
-
-        {/* Badges */}
+        {/* Status and Priority Badges */}
         <div className="flex flex-wrap gap-2">
+          <Badge
+            variant={statusConfig.variant}
+            size="small"
+            className="flex items-center gap-1"
+          >
+            <span>{statusConfig.icon}</span>
+            <span>{t(task.status)}</span>
+          </Badge>
           <Badge
             variant={
               task.priority === "urgent"
@@ -104,50 +87,56 @@ const TaskCard = ({ task, onEdit, onDelete, isDragging = false }) => {
           >
             {t(task.priority)}
           </Badge>
-          <Badge
-            variant={statusConfig.variant}
-            size="small"
-            className="flex items-center gap-1"
-          >
-            <span>{statusConfig.icon}</span>
-            <span>{t(task.status)}</span>
-          </Badge>
         </div>
 
-        {/* Meta information */}
-        <div className="space-y-2">
-          {/* Due date */}
-          {task.dueDate && (
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <ClockIcon className="h-4 w-4 mr-2" />
-              {formatDate(task.dueDate)}
-            </div>
-          )}
-
+        {/* Bottom Info */}
+        <div className="flex items-center justify-between text-sm">
           {/* Assignee */}
           {assignee && (
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center">
               <Avatar
                 name={assignee.name}
                 src={assignee.avatar}
                 size="small"
                 className="mr-2"
               />
-              {assignee.name}
+              <span className="text-gray-600 dark:text-gray-400 truncate">
+                {assignee.name}
+              </span>
             </div>
           )}
 
-          {/* Project */}
-          {project && (
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <FolderIcon className="h-4 w-4 mr-2" />
-              {project.name}
+          {/* Due Date */}
+          {task.dueDate && (
+            <div className="flex items-center text-gray-500 dark:text-gray-400">
+              <Clock className="h-3 w-3 mr-1" />
+              <span className="text-xs">
+                {formatDate(task.dueDate, "MMM dd")}
+              </span>
             </div>
           )}
         </div>
       </div>
     </Card>
   );
+};
+
+TaskCard.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    status: PropTypes.string.isRequired,
+    priority: PropTypes.string.isRequired,
+    assignee: PropTypes.string,
+    project: PropTypes.string,
+    dueDate: PropTypes.string,
+    notificationEnabled: PropTypes.bool,
+  }).isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onView: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool,
 };
 
 export default TaskCard;

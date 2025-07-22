@@ -86,6 +86,7 @@ export const translations = {
     complete: "Complete",
     teamMember: "Team Member",
     noTasks: "No tasks assigned yet",
+    welcomeBot: "Welcome! How can I help you?",
 
     // Settings
     generalSettings: "General Settings",
@@ -347,6 +348,13 @@ export const translations = {
     // Task Management
     reviewTasks: "Review Tasks",
     myProjects: "My Projects",
+    enableNotification: "Enable Notification",
+    notificationsEnabled: "Notifications are enabled for this task",
+    notificationsDisabled: "Notifications are disabled for this task",
+    timestamps: "Timestamps",
+    created: "Created",
+    updated: "Updated",
+    upcoming: "Upcoming",
   },
   ar: {
     // Common
@@ -443,6 +451,7 @@ export const translations = {
     complete: "مكتمل",
     teamMember: "عضو الفريق",
     noTasks: "لا توجد مهام معينة بعد",
+    welcomeBot: "مرحبا! كيف يمكنني مساعدتك؟",
 
     // Settings
     generalSettings: "الإعدادات العامة",
@@ -701,6 +710,13 @@ export const translations = {
     // Task Management
     reviewTasks: "مهام المراجعة",
     myProjects: "مشاريعي",
+    enableNotification: "تفعيل الإشعارات",
+    notificationsEnabled: "الإشعارات مفعلة لهذه المهمة",
+    notificationsDisabled: "الإشعارات معطلة لهذه المهمة",
+    timestamps: "الطوابع الزمنية",
+    created: "تم الإنشاء",
+    updated: "تم التحديث",
+    upcoming: "قادم",
   },
 };
 

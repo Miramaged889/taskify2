@@ -13,7 +13,6 @@ import {
   FolderIcon,
   UsersIcon,
   TrophyIcon,
-  SparklesIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -42,7 +41,7 @@ const AdminDashboard = () => {
   const { tasks } = useSelector((state) => state.tasks);
   const { projects } = useSelector((state) => state.projects);
   const { members } = useSelector((state) => state.team);
-  const { user } = useSelector((state) => state.auth);
+
   const { language } = useSelector((state) => state.settings);
   const { t } = useTranslation(language);
   const isRTL = language === "ar";
@@ -151,7 +150,9 @@ const AdminDashboard = () => {
         labels: {
           usePointStyle: true,
           padding: 20,
-          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
+          color: document.documentElement.classList.contains("dark")
+            ? "#ffffff"
+            : "#000000",
           font: {
             size: 12,
             weight: "500",
@@ -161,9 +162,15 @@ const AdminDashboard = () => {
       tooltip: {
         rtl: isRTL,
         textDirection: isRTL ? "rtl" : "ltr",
-        backgroundColor: document.documentElement.classList.contains('dark') ? "rgba(17, 24, 39, 0.95)" : "rgba(255, 255, 255, 0.95)",
-        titleColor: document.documentElement.classList.contains('dark') ? "#f9fafb" : "#111827",
-        bodyColor: document.documentElement.classList.contains('dark') ? "#f9fafb" : "#111827",
+        backgroundColor: document.documentElement.classList.contains("dark")
+          ? "rgba(17, 24, 39, 0.95)"
+          : "rgba(255, 255, 255, 0.95)",
+        titleColor: document.documentElement.classList.contains("dark")
+          ? "#f9fafb"
+          : "#111827",
+        bodyColor: document.documentElement.classList.contains("dark")
+          ? "#f9fafb"
+          : "#111827",
         borderColor: "#f0760a",
         borderWidth: 2,
         cornerRadius: 8,
@@ -177,7 +184,9 @@ const AdminDashboard = () => {
           display: false,
         },
         ticks: {
-          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
+          color: document.documentElement.classList.contains("dark")
+            ? "#ffffff"
+            : "#000000",
           font: {
             size: 11,
             weight: "500",
@@ -190,12 +199,24 @@ const AdminDashboard = () => {
           drawBorder: false,
         },
         ticks: {
-          color: document.documentElement.classList.contains('dark') ? "#ffffff" : "#000000",
+          color: document.documentElement.classList.contains("dark")
+            ? "#ffffff"
+            : "#000000",
           font: {
             size: 11,
             weight: "500",
           },
+          stepSize: 1,
+          callback: function (value) {
+            // Only show integer ticks from 1 to 5
+            if (value >= 1 && value <= 5 && Number.isInteger(value)) {
+              return value;
+            }
+            return "";
+          },
         },
+        min: 1,
+        max: 5,
       },
     },
   };
@@ -207,25 +228,6 @@ const AdminDashboard = () => {
       }`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* Welcome Message with Sparkles */}
-      <div
-        className={`${
-          isRTL ? "text-right" : "text-left"
-        } animate-fade-in p-6 rounded-2xl bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border border-primary-200/30 shadow-lg`}
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <SparklesIcon className="h-8 w-8 text-primary-500 animate-pulse-slow" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-500 via-accent-500 to-info-500 bg-clip-text text-transparent">
-            {isRTL
-              ? `${t("welcome")} ${user?.name || "Admin"}`
-              : `${t("welcome")}, ${user?.name || "Admin"}!`}
-          </h1>
-        </div>
-        <p className="text-lg text-neutral-700 dark:text-neutral-300 font-medium">
-          {t("adminDashboardWelcome") || "Welcome to your admin dashboard"}
-        </p>
-      </div>
-
       {/* Animated Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {statsCards.map((stat, index) => (

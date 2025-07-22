@@ -7,9 +7,13 @@ const Toggle = ({
   disabled = false,
   className = "",
   isRTL = false,
-  size = "medium",
-  color = "primary",
+  size,
+  color,
 }) => {
+  // Set default values for size and color if not provided
+  const _size = size || "medium";
+  const _color = color || "primary";
+
   const sizeClasses = {
     small: "h-5 w-9",
     medium: "h-6 w-11",
@@ -59,14 +63,14 @@ const Toggle = ({
           relative inline-flex flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent 
           transition-all duration-200 ease-in-out 
           focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-neutral-800
-          ${sizeClasses[size]}
-          ${enabled ? colorClasses[color] : "bg-gray-200 dark:bg-neutral-700"}
+          ${sizeClasses[_size]}
+          ${enabled ? colorClasses[_color] : "bg-gray-200 dark:bg-neutral-700"}
           ${
             disabled
               ? "opacity-50 cursor-not-allowed dark:opacity-40"
               : "hover:shadow-md active:scale-95"
           }
-          focus:ring-${color}-500 dark:focus:ring-${color}-400
+          focus:ring-${_color}-500 dark:focus:ring-${_color}-400
         `}
       >
         <span
@@ -74,7 +78,7 @@ const Toggle = ({
             pointer-events-none inline-block transform rounded-full
             bg-white dark:bg-gray-100
             shadow ring-0 transition duration-200 ease-in-out
-            ${thumbSizeClasses[size]}
+            ${thumbSizeClasses[_size]}
             ${
               enabled
                 ? isRTL
@@ -99,11 +103,6 @@ Toggle.propTypes = {
   isRTL: PropTypes.bool,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   color: PropTypes.oneOf(["primary", "success", "warning", "error", "info"]),
-};
-
-Toggle.defaultProps = {
-  size: "medium",
-  color: "primary",
 };
 
 export default Toggle;

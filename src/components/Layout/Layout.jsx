@@ -2,6 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import ChatWidget from "../Common/ChatWidget";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,6 +20,8 @@ const Layout = ({ children }) => {
           {children}
         </main>
       </div>
+      
+      <ChatWidget />
     </div>
   );
 };

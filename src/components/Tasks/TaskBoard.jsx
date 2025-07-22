@@ -5,6 +5,7 @@ import { moveTask, updateTask } from "../../store/slices/taskSlice";
 import { deleteTask, addTask } from "../../store/slices/taskSlice";
 import { useTranslation } from "../../utils/translations";
 import TaskCard from "./TaskCard";
+import TaskDetailsModal from "./TaskDetailsModal";
 import TaskForm from "../forms/adminForms/TaskForm";
 import Modal from "../Common/Modal";
 import Badge from "../Common/Badge";
@@ -18,7 +19,9 @@ const TaskBoard = () => {
   const { t } = useTranslation(language);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [viewingTask, setViewingTask] = useState(null);
   const [modalMode, setModalMode] = useState("create");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -99,6 +102,22 @@ const TaskBoard = () => {
     setIsModalOpen(true);
   };
 
+  const handleViewTask = (task) => {
+    setViewingTask(task);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleToggleNotification = (taskId, enabled) => {
+    const task = [...Object.values(stages).flat()].find((t) => t.id === taskId);
+    if (task) {
+      const updatedTask = { ...task, notificationEnabled: enabled };
+      dispatch(updateTask(updatedTask));
+      toast.success(
+        enabled ? t("notificationsEnabled") : t("notificationsDisabled")
+      );
+    }
+  };
+
   const handleDeleteTask = (taskId) => {
     if (confirm(t("confirmDelete"))) {
       dispatch(deleteTask(taskId));
@@ -162,7 +181,6 @@ const TaskBoard = () => {
 
   return (
     <div className="h-full">
-     
       {/* Task Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -220,6 +238,7 @@ const TaskBoard = () => {
                                 task={{ ...task, status: stage.id }}
                                 onEdit={handleEditTask}
                                 onDelete={handleDeleteTask}
+                                onView={handleViewTask}
                                 isDragging={snapshot.isDragging}
                               />
                             </div>
@@ -252,6 +271,18 @@ const TaskBoard = () => {
           mode={modalMode}
         />
       </Modal>
+
+      {/* Task Details Modal */}
+      <TaskDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        task={viewingTask}
+        onEdit={(task) => {
+          setIsDetailsModalOpen(false);
+          handleEditTask(task);
+        }}
+        onToggleNotification={handleToggleNotification}
+      />
     </div>
   );
 };
