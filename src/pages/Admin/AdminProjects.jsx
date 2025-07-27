@@ -578,6 +578,7 @@ const AdminProjects = () => {
             onChange={handleChange}
             onTeamMemberToggle={handleTeamMemberToggle}
             isRTL={isRTL}
+            mode={modalMode}
           />
         </div>
       </Modal>

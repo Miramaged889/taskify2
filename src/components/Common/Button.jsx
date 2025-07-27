@@ -11,6 +11,7 @@ const Button = ({
   onClick,
   type = "button",
   className = "",
+  isRTL, // Destructure isRTL to prevent it from being passed to DOM
   ...props
 }) => {
   const baseClasses =

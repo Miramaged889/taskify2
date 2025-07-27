@@ -185,12 +185,12 @@ const AdminTeam = () => {
       animation: "animate-bounce-in",
     },
     {
-      title: t("activeMembers"),
-      value: members.filter((m) => m.status === "active").length,
+      title: t("totalTeams"),
+      value: [...new Set(members.map(m => m.department))].length,
       icon: SparklesIcon,
-      bg: "bg-gradient-to-br from-success-400 to-success-600",
+      bg: "bg-gradient-to-br from-accent-400 to-accent-600",
       color: "text-white",
-      shadow: "shadow-success-glow",
+      shadow: "shadow-accent-glow",
       animation: "animate-bounce-in",
     },
     {

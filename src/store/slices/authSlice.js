@@ -1,15 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
   user: null,
-  role: null, // 'employee' or 'admin'
+  role: null, // 'employee', 'admin', or 'account_manager'
+  teamId: null, // For account managers to filter by team
   loading: false,
   error: null,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     loginStart: (state) => {
@@ -21,6 +22,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.role = action.payload.role;
+      state.teamId = action.payload.teamId || null;
     },
     loginFailure: (state, action) => {
       state.loading = false;
@@ -30,6 +32,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.role = null;
+      state.teamId = null;
       state.error = null;
     },
     clearError: (state) => {
@@ -37,8 +40,14 @@ const authSlice = createSlice({
     },
     updateUserPreferences: (state, action) => {
       if (state.user) {
-        state.user.preferences = { ...state.user.preferences, ...action.payload };
+        state.user.preferences = {
+          ...state.user.preferences,
+          ...action.payload,
+        };
       }
+    },
+    setTeamFilter: (state, action) => {
+      state.teamId = action.payload;
     },
   },
 });
@@ -50,6 +59,7 @@ export const {
   logout,
   clearError,
   updateUserPreferences,
+  setTeamFilter,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -108,9 +108,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
   ];
 
-  const filteredNavigation = navigation.filter((item) =>
-    item.roles.includes(user?.role)
-  );
+  const filteredNavigation = navigation.filter((item) => {
+    // Special case: sarah.wilson@example.com gets both admin and employee navigation
+    if (user?.email?.toLowerCase() === "sarah.wilson@example.com") {
+      return item.roles.includes("admin");
+    }
+    return item.roles.includes(user?.role);
+  });
 
   return (
     <>

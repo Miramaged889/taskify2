@@ -10,14 +10,13 @@ import Avatar from "../../components/Common/Avatar";
 import Badge from "../../components/Common/Badge";
 import Modal from "../../components/Common/Modal";
 import ChatGroupForm from "../../components/forms/adminForms/ChatGroupForm";
+import ChatInfoSidebar from "../../components/Chat/ChatInfoSidebar";
 import {
   PaperAirplaneIcon,
   PlusIcon,
   MagnifyingGlassIcon,
   UserGroupIcon,
   ChatBubbleLeftEllipsisIcon,
-  PhoneIcon,
-  VideoCameraIcon,
   InformationCircleIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
@@ -47,6 +46,7 @@ const AdminChat = () => {
   });
   const [groupFormErrors, setGroupFormErrors] = useState({});
   const [groupFormLoading, setGroupFormLoading] = useState(false);
+  const [isInfoSidebarOpen, setIsInfoSidebarOpen] = useState(false);
 
   const conversations = mockConversations
     .filter((conv) => conv.type === activeTab)
@@ -196,32 +196,12 @@ const AdminChat = () => {
         </div>
 
         <div className={`flex items-center ${isRTL ? "flex-row" : ""}`}>
-          {activeConversation?.type === "individual" && (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full"
-                icon={<PhoneIcon className="h-5 w-5" />}
-                onClick={() => console.log("Start voice call")}
-                title={t("startVoiceCall")}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full"
-                icon={<VideoCameraIcon className="h-5 w-5" />}
-                onClick={() => console.log("Start video call")}
-                title={t("startVideoCall")}
-              />
-            </>
-          )}
           <Button
             variant="ghost"
             size="icon"
             className="rounded-full"
             icon={<InformationCircleIcon className="h-5 w-5" />}
-            onClick={() => console.log("Show chat info")}
+            onClick={() => setIsInfoSidebarOpen(true)}
             title={t("chatInfo")}
           />
         </div>
@@ -580,6 +560,13 @@ const AdminChat = () => {
           isRTL={isRTL}
         />
       </Modal>
+
+      {/* Chat Info Sidebar */}
+      <ChatInfoSidebar
+        isOpen={isInfoSidebarOpen}
+        onClose={() => setIsInfoSidebarOpen(false)}
+        conversation={activeConversation}
+      />
     </div>
   );
 };
