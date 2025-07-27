@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setTasks } from "../../store/slices/taskSlice";
 import { setProjects } from "../../store/slices/projectSlice";
@@ -19,6 +19,7 @@ import {
   UsersIcon,
   TrophyIcon,
   ExclamationTriangleIcon,
+  FunnelIcon,
 } from "@heroicons/react/24/outline";
 import {
   Chart as ChartJS,
@@ -31,6 +32,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import Card from "../../components/Common/Card";
+import Select from "../../components/Common/Select";
 
 ChartJS.register(
   CategoryScale,
@@ -46,11 +48,14 @@ const AdminDashboard = () => {
   const { tasks } = useSelector((state) => state.tasks);
   const { projects } = useSelector((state) => state.projects);
   const { members } = useSelector((state) => state.team);
-  const { role, teamId } = useSelector((state) => state.auth);
+  const { role, teamId, user } = useSelector((state) => state.auth);
 
   const { language } = useSelector((state) => state.settings);
   const { t } = useTranslation(language);
   const isRTL = language === "ar";
+
+  // Add team filter state for sarah.wilson@example.com
+  const [teamFilter, setTeamFilter] = useState("all");
 
   useEffect(() => {
     // Load initial data
@@ -59,26 +64,55 @@ const AdminDashboard = () => {
     dispatch(setMembers(mockUsers));
   }, [dispatch]);
 
-  // Filter data based on user role
+  // Get available teams for filtering
+  const availableTeams = teams.map((team) => ({
+    value: team.id,
+    label: team.name,
+  }));
+
+  // Filter data based on user role and team filter
   const getFilteredData = () => {
-    if (role === "account_manager" && teamId) {
-      const team = teams.find((t) => t.id === teamId);
+    let filteredTasks = tasks;
+    let filteredProjects = projects;
+    let filteredMembers = members;
+
+    // Filter by team if sarah.wilson@example.com and team filter is selected
+    if (
+      user?.email?.toLowerCase() === "sarah.wilson@example.com" &&
+      teamFilter !== "all"
+    ) {
+      const team = teams.find((t) => t.id === teamFilter);
       if (team) {
-        const teamMembers = members.filter((m) => team.members.includes(m.id));
-        const teamTasks = tasks.filter((task) =>
+        filteredMembers = members.filter((m) => team.members.includes(m.id));
+        filteredTasks = tasks.filter((task) =>
           team.members.includes(task.assignee)
         );
-        const teamProjects = projects.filter((project) =>
-          teamMembers.some((member) => project.assignees?.includes(member.id))
+        filteredProjects = projects.filter((project) =>
+          filteredMembers.some((member) =>
+            project.assignees?.includes(member.id)
+          )
         );
-        return {
-          tasks: teamTasks,
-          projects: teamProjects,
-          members: teamMembers,
-        };
+      }
+    } else if (role === "account_manager" && teamId) {
+      const team = teams.find((t) => t.id === teamId);
+      if (team) {
+        filteredMembers = members.filter((m) => team.members.includes(m.id));
+        filteredTasks = tasks.filter((task) =>
+          team.members.includes(task.assignee)
+        );
+        filteredProjects = projects.filter((project) =>
+          filteredMembers.some((member) =>
+            project.assignees?.includes(member.id)
+          )
+        );
       }
     }
-    return { tasks, projects, members };
+
+    return {
+      tasks: filteredTasks,
+      projects: filteredProjects,
+      members: filteredMembers,
+    };
   };
 
   const {
@@ -261,7 +295,6 @@ const AdminDashboard = () => {
       className={`h-screen flex flex-col ${isRTL ? "rtl" : "ltr"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
-
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto bg-gradient-to-br from-neutral-50 via-primary-50/30 to-accent-50/20 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
         <div className="space-y-8 p-6">
@@ -384,15 +417,39 @@ const AdminDashboard = () => {
 
           {/* Enhanced Team Performance */}
           <Card className="animate-slide-in shadow-xl border-2 border-success-200/30 bg-white dark:bg-neutral-800">
-            <div className="flex items-center gap-3 mb-6 p-6 border-b border-neutral-200 dark:border-neutral-700">
-              <div className="p-2 rounded-lg bg-gradient-to-r from-success-400 to-success-600">
-                <UsersIcon className="h-6 w-6 text-white" />
+            <div className="flex items-center justify-between mb-6 p-6 border-b border-neutral-200 dark:border-neutral-700">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-success-400 to-success-600">
+                  <UsersIcon className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
+                  {role === "account_manager"
+                    ? t("teamPerformance")
+                    : t("teamPerformance")}
+                </h2>
+                {/* Team Filter - Only for sarah.wilson@example.com */}
+                {user?.email?.toLowerCase() === "sarah.wilson@example.com" && (
+                  <div className="flex items-center gap-2">
+                    <FunnelIcon className="h-5 w-5 text-gray-500" />
+                    <Select
+                      value={teamFilter}
+                      onChange={(e) => setTeamFilter(e.target.value)}
+                      options={[
+                        { value: "all", label: t("allTeams") },
+                        ...availableTeams,
+                      ]}
+                      className="w-48 bg-white dark:bg-neutral-800 border-gray-300 dark:border-neutral-600 text-gray-900 dark:text-neutral-100"
+                    />
+                  </div>
+                )}
               </div>
-              <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                {role === "account_manager"
-                  ? t("teamPerformance")
-                  : t("teamPerformance")}
-              </h2>
+              {/* Show selected team name */}
+              {user?.email?.toLowerCase() === "sarah.wilson@example.com" &&
+                teamFilter !== "all" && (
+                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium rounded-full">
+                    {teams.find((t) => t.id === teamFilter)?.name}
+                  </span>
+                )}
             </div>
             <div className="overflow-hidden">
               <div className="max-h-80 overflow-y-auto">
@@ -434,7 +491,8 @@ const AdminDashboard = () => {
                         const completionRate =
                           memberTasks.length > 0
                             ? Math.round(
-                                (completedTasks.length / memberTasks.length) * 100
+                                (completedTasks.length / memberTasks.length) *
+                                  100
                               )
                             : 0;
 

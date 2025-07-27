@@ -55,7 +55,7 @@ const SetupForm = () => {
       dispatch(updateUserPreferences(formData));
       
       // Navigate to appropriate dashboard
-      navigate(user.role === 'admin' ? '/admin' : '/employee');
+      navigate(user.email?.toLowerCase() === 'sarah.wilson@example.com' || user.role === 'admin' ? '/admin' : '/employee');
     } catch (error) {
       console.error('Setup failed:', error);
     } finally {
